@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Stylish RPG (Fixed)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="game-container">
+    <!-- Title Screen -->
+    <div id="title-screen">
+        <div id="title-logo">EXPÉDITION 67</div>
+        <div id="title-subtitle">Une aventure stylisée à la française</div>
+        <div id="title-press-start">Appuyez sur ENTRÉE pour commencer</div>
+        <div class="menu-hint">Appuyez sur S pour charger une sauvegarde, si disponible.</div>
+        <div id="title-footer">Guillaume, chevalier errant, attend votre commandement.</div>
+    </div>
+    
+    <!-- Transition Layer -->
+    <div id="transition-overlay"></div>
+
+    <!-- Exploration UI -->
+    <div id="ui-layer">
+        <div class="hud-text">
+            HP: <span id="explore-hp">100</span>/100
+        </div>
+        <div id="controls-hint">WASD to Move</div>
+    </div>
+
+    <!-- Battle UI Layer -->
+    <div id="battle-ui">
+        <div class="slash-line slash-1"></div>
+        <div class="slash-line slash-2"></div>
+        
+        <div id="battle-log">A wild threat approaches...</div>
+
+        <div class="portrait-container">
+            <div class="portrait-img"></div>
+        </div>
+        <div class="stats-container">
+            <div class="char-name" id="hero-name">GUILLAUME</div>
+            <div class="hp-text">HP <span id="battle-hp-val">100</span>/100</div>
+        </div>
+
+        <div class="action-menu">
+            <button class="p5-btn" id="btn-attack" onclick="battle.initiateAttack()">Attaquer</button>
+            <button class="p5-btn" id="btn-heal" onclick="battle.heal()">Soigner</button>
+            <button class="p5-btn" id="btn-run" onclick="battle.run()">Fuir</button>
+        </div>
+
+        <!-- Timing Game Overlay -->
+        <div id="timing-overlay">
+            <div class="reticle"></div>
+            <div class="timing-ring" id="timing-ring"></div>
+            <div class="timing-prompt" id="timing-text">PRESS SPACE!</div>
+        </div>
+    </div>
+
+    <!-- Level-up Overlay -->
+    <div id="levelup-overlay">
+        <div id="levelup-panel">
+            <h2>Niveau supérieur atteint !</h2>
+            <div class="levelup-description">
+                Choisissez un attribut à renforcer pour Guillaume :
+            </div>
+            <div class="levelup-options">
+                <button class="levelup-btn" data-attr="strength">Force – +1 dégâts physiques</button>
+                <button class="levelup-btn" data-attr="magic">Magie – +1 puissance mystique</button>
+                <button class="levelup-btn" data-attr="agility">Agilité – +1 vitesse/élégance</button>
+                <button class="levelup-btn" data-attr="defense">Défense – +1 robustesse</button>
+                <button class="levelup-btn" data-attr="frenchness">Frenchitude – +1 panache français</button>
+            </div>
+            <div class="levelup-hint">Utilisez la souris pour choisir. Un seul attribut par niveau.</div>
+        </div>
+    </div>
+
+    <!-- In-game Menu Overlay -->
+    <div id="menu-overlay">
+        <div id="menu-panel">
+            <h2>Menu</h2>
+            <div class="menu-section-title">Guillaume</div>
+            <div class="menu-line">Level: <span id="menu-level">1</span></div>
+            <div class="menu-line">HP: <span id="menu-hp">100</span>/<span id="menu-maxhp">100</span></div>
+            <div class="menu-line">EXP: <span id="menu-exp">0</span>/<span id="menu-nextexp">20</span></div>
+            <div class="menu-line">FOR: <span id="menu-str">5</span>  MAG: <span id="menu-mag">3</span></div>
+            <div class="menu-line">AGI: <span id="menu-agi">4</span>  DEF: <span id="menu-def">4</span></div>
+            <div class="menu-line">FRENCHITUDE: <span id="menu-fr">7</span></div>
+
+            <div class="menu-section-title">Settings</div>
+            <div class="menu-line">Encounter Rate: <span id="menu-encounter">0.002</span></div>
+            <div class="menu-hint">Press M to toggle this menu.</div>
+        </div>
+    </div>
+</div>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="main.js"></script>
+</body>
+</html>

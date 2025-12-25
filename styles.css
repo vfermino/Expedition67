@@ -1,0 +1,405 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@300;900&display=swap');
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #87CEEB; /* Sky Blue Backup */
+    font-family: 'Roboto', sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#game-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- FF9 SWIRL TRANSITION --- */
+#transition-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    background-image: repeating-conic-gradient(from 0deg, #111 0deg 10deg, #222 10deg 20deg);
+    background-size: 200% 200%;
+    transition: opacity 0.2s;
+}
+#transition-overlay.active {
+    opacity: 1;
+    animation: spin-swirl 0.8s linear infinite;
+}
+@keyframes spin-swirl {
+    0% { background-position: 0% 0%; transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { background-position: 100% 100%; transform: scale(1); }
+}
+
+/* --- EXPLORATION HUD --- */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+.hud-text {
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    text-shadow: 2px 2px 0px #000;
+}
+
+/* --- PERSONA-STYLE BATTLE UI --- */
+#battle-ui {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+    z-index: 20;
+}
+
+/* The "Slash" lines aesthetic */
+.slash-line {
+    position: absolute;
+    background: white;
+    transform-origin: top left;
+}
+.slash-1 { top: 10%; left: 0; width: 300px; height: 2px; transform: skewX(-20deg); background: #d4af37; /* Gold */ }
+.slash-2 { bottom: 10%; right: 0; width: 400px; height: 4px; transform: skewX(-20deg); background: #fff; }
+
+/* Character Portraits */
+.portrait-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50px;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #fff;
+    transform: skewX(-10deg);
+    background: rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+.portrait-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #1a237e, #d4af37);
+}
+
+/* Stats */
+.stats-container {
+    position: absolute;
+    bottom: 30px;
+    left: 220px;
+    text-align: left;
+    transform: skewX(-10deg);
+}
+.char-name { font-family: 'Cinzel', serif; color: #d4af37; font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+.hp-text { color: #fff; font-size: 18px; font-weight: 300; }
+
+/* Action Menu */
+.action-menu {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: auto;
+    transform: skewX(-10deg);
+}
+
+.p5-btn {
+    background: transparent;
+    border: none;
+    border-left: 5px solid #d4af37;
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    text-align: right;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: 250px;
+}
+
+.p5-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    padding-right: 30px;
+    border-left-color: #fff;
+}
+
+.p5-btn:disabled {
+    opacity: 0.3;
+    border-left-color: #555;
+    cursor: default;
+}
+
+/* TIMING MINIGAME */
+#timing-overlay {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    pointer-events: none;
+    z-index: 30;
+}
+
+.reticle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border: 4px solid #d4af37;
+    border-radius: 50%;
+}
+
+.timing-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    border: 15px solid #fff;
+    border-radius: 50%;
+    opacity: 0.8;
+    box-shadow: 0 0 15px #fff;
+}
+
+.timing-prompt {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    text-shadow: 0 0 10px #d4af37;
+    animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse { from { opacity: 0.5; } to { opacity: 1; text-shadow: 0 0 20px #fff; } }
+
+/* Battle Log */
+#battle-log {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    font-style: italic;
+    max-width: 500px;
+    text-shadow: 1px 1px 2px #000;
+}
+
+#controls-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: rgba(0,0,0,0.5);
+    font-size: 12px;
+    background: rgba(255,255,255,0.5);
+    padding: 5px;
+}
+
+/* In-game menu overlay */
+#menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 40;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+}
+
+#menu-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 20, 40, 0.95);
+    padding: 24px 32px;
+    border: 2px solid #d4af37;
+    min-width: 320px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+#menu-panel h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 24px;
+    color: #d4af37;
+}
+
+#menu-panel .menu-section-title {
+    font-size: 16px;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffd700;
+}
+
+#menu-panel .menu-line {
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+#menu-panel .menu-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Level-up choice overlay */
+#levelup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 70;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+}
+
+#levelup-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 20, 40, 0.95);
+    padding: 24px 32px;
+    border: 2px solid #d4af37;
+    min-width: 360px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+#levelup-panel h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 24px;
+    color: #d4af37;
+}
+
+.levelup-description {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+.levelup-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.levelup-btn {
+    background: transparent;
+    border: 1px solid #d4af37;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    padding: 6px 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.levelup-btn:hover {
+    background: rgba(212, 175, 55, 0.25);
+    transform: translateX(4px);
+}
+
+.levelup-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    opacity: 0.8;
+}
+
+/* Title screen overlay */
+#title-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top, #1b1b3a 0%, #050510 60%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #fff;
+    z-index: 60;
+    text-align: center;
+}
+
+#title-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 56px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #f5f5f5;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px #d4af37;
+    margin-bottom: 12px;
+}
+
+#title-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: #d4af37;
+    margin-bottom: 40px;
+}
+
+#title-press-start {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    animation: title-blink 1s infinite alternate;
+}
+
+@keyframes title-blink {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+#title-footer {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    opacity: 0.7;
+}
